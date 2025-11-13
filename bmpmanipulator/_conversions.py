@@ -5,7 +5,6 @@ def clamp(n, low, high):
 
 def convert_to_YUV(tuple):
   tuple = tuple / 255
-  # print(tuple)
 
   conv_matrix = np.array([[ 0.299,  0.587,  0.114],
                           [-0.299, -0.587,  0.886],
