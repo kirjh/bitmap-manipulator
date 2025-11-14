@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 class bitmapManipulator:
   from ._image import parse_image, parse_bitmap
   from ._adjustments import adjust_brightness, adjust_size, adjust_all, toggle_button
+  from ._compression import compress, decompress
 
   def __init__(self, root):
     self.root = root
@@ -13,11 +14,13 @@ class bitmapManipulator:
     # define frames
     self.browse_frame = tk.Frame(root)
     self.load_frame = tk.Frame(root)
-    self.data_frame = tk.Frame(root)
-    self.image_frame = tk.Frame(root)
-    self.slider_frame = tk.Frame(root)
-    self.button_frame = tk.Frame(root)
-    self.bottom_frame = tk.Frame(root)
+    self.editor_frame = tk.Frame(root)
+    self.data_frame = tk.Frame(self.editor_frame)
+    self.image_frame = tk.Frame(self.editor_frame)
+    self.slider_frame = tk.Frame(self.editor_frame)
+    self.button_frame = tk.Frame(self.editor_frame)
+    self.bottom_frame = tk.Frame(self.editor_frame)
+    self.compress_frame = tk.Frame(root)
 
     self.browse_frame.pack(padx=10, pady=[10, 0])
     self.load_frame.pack(pady=[0, 10])
@@ -49,13 +52,19 @@ class bitmapManipulator:
     self.bitmap = None
     self.pixel_array = None
 
+    self.new_img_size = tk.IntVar()
+    self.ratio = tk.StringVar()
+    self.time = tk.IntVar()
+
     # browse file
     tk.Label(self.browse_frame, text="File Path").pack(side=tk.LEFT)
     self.path_entry = tk.Entry(self.browse_frame, width=30, textvariable=self.file_path)
     self.path_entry.pack(side=tk.LEFT)
     tk.Button(self.browse_frame, text="Browse", command=self.browse_file).pack(side=tk.LEFT)
     # open file
-    tk.Button(self.load_frame, text="Parse Bitmap", command=self.parse_image).pack()
+    tk.Button(self.load_frame, text="Parse Bitmap", command=self.parse_image).grid(row=0, column=0)
+    tk.Button(self.load_frame, text="Compress", command=self.compress).grid(row=0, column=1)
+    tk.Button(self.load_frame, text="Decompress", command=self.decompress).grid(row=0, column=2)
     # display file details
     tk.Label(self.data_frame, text="File Size").grid(row=0, column=0)
     tk.Label(self.data_frame, textvariable=self.img_size).grid(row=0, column=1)
@@ -65,6 +74,15 @@ class bitmapManipulator:
     tk.Label(self.data_frame, textvariable=self.img_height).grid(row=2, column=1)
     tk.Label(self.data_frame, text="Bits Per Pixel").grid(row=3, column=0)
     tk.Label(self.data_frame, textvariable=self.img_bits).grid(row=3, column=1)
+    # display compression details
+    tk.Label(self.compress_frame, text="Original File Size").grid(row=0, column=0)
+    tk.Label(self.compress_frame, textvariable=self.img_size).grid(row=0, column=1)
+    tk.Label(self.compress_frame, text="New File Size").grid(row=1, column=0)
+    tk.Label(self.compress_frame, textvariable=self.new_img_size).grid(row=1, column=1)
+    tk.Label(self.compress_frame, text="Compression Ratio").grid(row=2, column=0)
+    tk.Label(self.compress_frame, textvariable=self.ratio).grid(row=2, column=1)
+    tk.Label(self.compress_frame, text="Compression Time").grid(row=3, column=0)
+    tk.Label(self.compress_frame, textvariable=self.time).grid(row=3, column=1)
     # sliders
     tk.Label(self.slider_frame, text="Brightness").grid(row=0, column=0)
     self.lum = tk.IntVar()

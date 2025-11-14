@@ -2,19 +2,22 @@ import numpy as np
 import math
 import tkinter as tk
 
-def parse_image(self):
+def parse_image(self, file_data=None):
   # parse image as a byte array
   try:
     with open(self.file_path.get(), "rb") as f:
-      # attempt to read file
-      # if file header does not match or if file is unreadable throw 'invalid file type'
-      try:
-        img_bytes = f.read()
-        if img_bytes[0:2].decode("utf-8") != "BM":
-          raise Exception()
-      except:
-        tk.messagebox.showerror("Error", "Invalid file type.")
-        return
+      if not file_data:
+        # attempt to read file
+        # if file header does not match or if file is unreadable throw 'invalid file type'
+        try:
+          img_bytes = f.read()
+          if img_bytes[0:2].decode("utf-8") != "BM":
+            raise Exception()
+        except:
+          tk.messagebox.showerror("Error", "Invalid file type.")
+          return
+      else:
+        img_bytes = file_data
       # decode byte array
       self.img_size.set(int.from_bytes(img_bytes[2:6], 'little')) # size
       self.img_width.set(int.from_bytes(img_bytes[18:22], 'little')) # width
@@ -38,6 +41,8 @@ def parse_image(self):
       self.blue_button['state'] = 'normal'
       self.perf_button['state'] = 'normal'
 
+      self.compress_frame.pack_forget()
+      self.editor_frame.pack()
       return
   except:
     tk.messagebox.showerror("Error", "Invalid file path.")

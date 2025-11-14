@@ -18,7 +18,6 @@ def convert_to_YUV(tuple):
 
 def convert_to_RGB(tuple):
   tuple = tuple
-  # print(tuple)
 
   conv_matrix = np.array([[ 1,      0,       1],
                           [ 1, -0.194,  -0.509],
