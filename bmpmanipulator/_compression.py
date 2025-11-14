@@ -69,7 +69,7 @@ def compress(self):
       
       try:
         files = [('CMPT365 Compressed File', '*.cmpt365')]
-        file_path = asksaveasfilename(filetypes = files, defaultextension = files)
+        file_path = asksaveasfilename(initialfile = "export", filetypes = files, defaultextension = files)
         start_time = time.perf_counter()
         with open(file_path, 'wb') as file:
           file.write(hex_array)
