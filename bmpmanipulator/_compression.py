@@ -33,7 +33,6 @@ def compress(self):
         dictionary[bytes([i])] = i
       
       result = []
-      max = 0
       init_byte = b""
       
       for byte in img_bytes:
@@ -44,15 +43,11 @@ def compress(self):
         # if symbol doesn't exist
         else:
           result.append(dictionary[init_byte])
-          if dictionary[init_byte] > max:
-            max = dictionary[init_byte]
           dictionary[new_byte] = len(dictionary.keys())
           init_byte = bytes([byte])
       result.append(dictionary[init_byte])
-      if dictionary[init_byte] > max:
-        max = dictionary[init_byte]
 
-      index_bits = math.ceil(math.log(max, 2))
+      index_bits = math.ceil(math.log(len(dictionary.keys())-1, 2))
       # create header
       bit_string = to_bits("CM") + f'{index_bits:032b}' + f'{len(result):032b}'
       # add index bits
